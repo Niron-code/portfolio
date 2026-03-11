@@ -388,6 +388,28 @@ section { padding: 7rem 0; overflow: visible; }
   margin-bottom: 1.5rem;
   animation: fadeInUp 1s ease-out 0.5s forwards;
   opacity: 0;
+  min-height: 1.5em;
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+#typedText {
+  display: inline-block;
+  min-width: 1ch;
+}
+
+.typing-cursor {
+  display: inline-block;
+  color: var(--orange);
+  font-weight: 300;
+  animation: blink 1s step-end infinite;
+  margin-left: 2px;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
 }
 
 .hero-desc {
@@ -1507,6 +1529,7 @@ footer {
     padding: 0 1.5rem;
   }
   .hero-badge { margin: 0 auto 1.8rem; }
+  .hero-title { justify-content: center; }
   .hero-desc { 
     margin: 0 auto 2.5rem;
     max-width: 100%;
@@ -1706,6 +1729,7 @@ footer {
   .hero-title {
     font-size: 0.95rem;
     margin-bottom: 1.25rem;
+    justify-content: center;
   }
   .hero-desc {
     font-size: 0.95rem;

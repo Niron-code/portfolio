@@ -47,6 +47,52 @@ function toggleTheme() {
   }
 })();
 
+// Typing Animation
+const roles = [
+  'Software Engineer',
+  'Backend Developer',
+  'Full-Stack Developer',
+  'Cloud Engineer',
+  'Problem Solver'
+];
+
+let roleIndex = 0;
+let charIndex = 0;
+let isDeleting = false;
+let typingSpeed = 100;
+
+function typeRole() {
+  const typedTextElement = document.getElementById('typedText');
+  if (!typedTextElement) return;
+  
+  const currentRole = roles[roleIndex];
+  
+  if (isDeleting) {
+    typedTextElement.textContent = currentRole.substring(0, charIndex - 1);
+    charIndex--;
+    typingSpeed = 50;
+  } else {
+    typedTextElement.textContent = currentRole.substring(0, charIndex + 1);
+    charIndex++;
+    typingSpeed = 100;
+  }
+  
+  if (!isDeleting && charIndex === currentRole.length) {
+    // Pause at end of word
+    typingSpeed = 2000;
+    isDeleting = true;
+  } else if (isDeleting && charIndex === 0) {
+    isDeleting = false;
+    roleIndex = (roleIndex + 1) % roles.length;
+    typingSpeed = 500;
+  }
+  
+  setTimeout(typeRole, typingSpeed);
+}
+
+// Start typing animation after a short delay
+setTimeout(typeRole, 1000);
+
 // Scroll reveal
 const revealEls = document.querySelectorAll('.reveal');
 const observer = new IntersectionObserver((entries) => {
