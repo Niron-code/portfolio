@@ -746,8 +746,29 @@ section { padding: 7rem 0; overflow: visible; }
 .skill-group:hover::before { opacity: 1; }
 
 .skill-group-icon {
-  font-size: 1.4rem;
+  width: 48px;
+  height: 48px;
   margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--orange-dim);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+.skill-group-icon svg {
+  width: 24px;
+  height: 24px;
+  color: var(--orange);
+  transition: all 0.3s ease;
+}
+.skill-group:hover .skill-group-icon {
+  background: var(--orange);
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 4px 16px rgba(255, 92, 26, 0.3);
+}
+.skill-group:hover .skill-group-icon svg {
+  color: var(--bg);
 }
 .skill-group-title {
   font-family: 'Syne', sans-serif;
@@ -1165,8 +1186,29 @@ section { padding: 7rem 0; overflow: visible; }
   box-shadow: 0 16px 48px rgba(255, 92, 26, 0.1);
 }
 .edu-icon {
-  font-size: 2rem;
+  width: 56px;
+  height: 56px;
   margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--orange-dim);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+.edu-icon svg {
+  width: 28px;
+  height: 28px;
+  color: var(--orange);
+  transition: all 0.3s ease;
+}
+.edu-card:hover .edu-icon {
+  background: var(--orange);
+  transform: scale(1.1) rotate(-5deg);
+  box-shadow: 0 4px 16px rgba(255, 92, 26, 0.3);
+}
+.edu-card:hover .edu-icon svg {
+  color: var(--bg);
 }
 .edu-degree {
   font-family: 'Syne', sans-serif;
@@ -1796,6 +1838,14 @@ footer {
   .skill-group {
     padding: 1.25rem;
   }
+  .skill-group-icon {
+    width: 42px;
+    height: 42px;
+  }
+  .skill-group-icon svg {
+    width: 20px;
+    height: 20px;
+  }
   .skill-group-title {
     font-size: 0.8rem;
   }
@@ -1855,6 +1905,14 @@ footer {
   /* Education */
   .edu-card {
     padding: 1.25rem;
+  }
+  .edu-icon {
+    width: 48px;
+    height: 48px;
+  }
+  .edu-icon svg {
+    width: 24px;
+    height: 24px;
   }
   .edu-degree {
     font-size: 0.95rem;
