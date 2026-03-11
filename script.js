@@ -5,6 +5,41 @@ window.addEventListener('scroll', () => {
   else navbar.classList.remove('scrolled');
 });
 
+// Parallax Scrolling Effect
+let ticking = false;
+
+function updateParallax() {
+  const scrolled = window.pageYOffset;
+  const parallaxElements = document.querySelectorAll('.parallax');
+  
+  parallaxElements.forEach(element => {
+    const speed = parseFloat(element.dataset.speed) || 0.5;
+    const rect = element.getBoundingClientRect();
+    const elementTop = rect.top + scrolled;
+    
+    // Only apply parallax when element is in viewport or near it
+    if (scrolled + window.innerHeight > elementTop - 200 && scrolled < elementTop + rect.height + 200) {
+      const yPos = -(scrolled - elementTop) * speed;
+      element.style.transform = `translate3d(0, ${yPos}px, 0)`;
+    }
+  });
+  
+  ticking = false;
+}
+
+function requestParallaxUpdate() {
+  if (!ticking) {
+    window.requestAnimationFrame(updateParallax);
+    ticking = true;
+  }
+}
+
+window.addEventListener('scroll', requestParallaxUpdate, { passive: true });
+window.addEventListener('resize', requestParallaxUpdate, { passive: true });
+
+// Initial parallax update after page load
+window.addEventListener('load', updateParallax);
+
 // Hamburger menu
 function toggleMenu() {
   document.getElementById('hamburger').classList.toggle('open');

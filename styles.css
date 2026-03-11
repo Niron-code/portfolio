@@ -576,8 +576,84 @@ section { padding: 7rem 0; overflow: visible; }
   100% { transform: scaleY(1); opacity: 1; }
 }
 
+/* ── PARALLAX SHAPES ── */
+.parallax {
+  transition: transform 0.1s ease-out;
+  will-change: transform;
+}
+
+.parallax-shape {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.6;
+  z-index: 1;
+}
+
+.parallax-shape-1 {
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(255,92,26,0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  top: 20%;
+  left: 10%;
+  filter: blur(40px);
+}
+
+.parallax-shape-2 {
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, rgba(255,92,26,0.06) 0%, transparent 70%);
+  border-radius: 50%;
+  bottom: 25%;
+  right: 15%;
+  filter: blur(35px);
+}
+
+.parallax-shape-3 {
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, rgba(255,92,26,0.05) 0%, transparent 70%);
+  border-radius: 50%;
+  top: 10%;
+  right: 20%;
+  filter: blur(45px);
+}
+
+.parallax-shape-4 {
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, rgba(255,92,26,0.07) 0%, transparent 70%);
+  border-radius: 50%;
+  top: 15%;
+  left: 12%;
+  filter: blur(50px);
+}
+
+/* Light theme adjustments for parallax shapes */
+:root.light-theme .parallax-shape {
+  opacity: 0.4;
+}
+:root.light-theme .parallax-shape-1 {
+  background: radial-gradient(circle, rgba(255,92,26,0.12) 0%, transparent 70%);
+}
+:root.light-theme .parallax-shape-2 {
+  background: radial-gradient(circle, rgba(255,92,26,0.1) 0%, transparent 70%);
+}
+:root.light-theme .parallax-shape-3 {
+  background: radial-gradient(circle, rgba(255,92,26,0.08) 0%, transparent 70%);
+}
+:root.light-theme .parallax-shape-4 {
+  background: radial-gradient(circle, rgba(255,92,26,0.11) 0%, transparent 70%);
+}
+
 /* ── ABOUT ── */
-#about { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+#about { 
+  background: var(--bg2); 
+  border-top: 1px solid var(--border); 
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
 
 .about-grid {
   display: grid;
@@ -808,7 +884,13 @@ section { padding: 7rem 0; overflow: visible; }
 }
 
 /* ── PROJECTS ── */
-#projects { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+#projects { 
+  background: var(--bg2); 
+  border-top: 1px solid var(--border); 
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
 
 .projects-heading {
   font-size: clamp(2rem, 3.5vw, 3rem);
@@ -1666,6 +1748,18 @@ footer {
 
 /* Small Tablets / Large Phones (768px and below) */
 @media (max-width: 768px) {
+  /* Reduce parallax shapes on tablets */
+  .parallax-shape {
+    opacity: 0.4;
+  }
+  .parallax-shape-1,
+  .parallax-shape-2,
+  .parallax-shape-3,
+  .parallax-shape-4 {
+    width: 120px;
+    height: 120px;
+  }
+  
   .container {
     padding: 0 1.25rem;
   }
@@ -1739,6 +1833,11 @@ footer {
 
 /* Mobile Phones (600px and below) */
 @media (max-width: 600px) {
+  /* Hide parallax shapes on mobile for better performance */
+  .parallax-shape {
+    display: none;
+  }
+  
   .container {
     padding: 0 1rem;
   }
