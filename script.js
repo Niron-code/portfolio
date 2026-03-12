@@ -194,3 +194,46 @@ function requestTimelineUpdate() {
 window.addEventListener('scroll', requestTimelineUpdate, { passive: true });
 window.addEventListener('resize', requestTimelineUpdate, { passive: true });
 window.addEventListener('load', updateTimelineProgress);
+
+// Animated Counter for Stats
+function animateCounter(element, target, duration = 2000, suffix = '+') {
+  const start = 0;
+  const increment = target / (duration / 16); // 60fps
+  let current = start;
+  
+  const timer = setInterval(() => {
+    current += increment;
+    if (current >= target) {
+      element.textContent = target + suffix;
+      clearInterval(timer);
+    } else {
+      element.textContent = Math.floor(current) + suffix;
+    }
+  }, 16);
+}
+
+// Observe stat numbers for counting animation
+const statNumbers = document.querySelectorAll('.stat-number');
+const statsObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const element = entry.target;
+      const target = parseInt(element.getAttribute('data-target'));
+      const label = element.nextElementSibling.textContent;
+      
+      // Determine suffix based on label
+      let suffix = '+';
+      if (label === 'Companies') {
+        suffix = '';
+      }
+      
+      // Start counting animation
+      animateCounter(element, target, 1000, suffix);
+      
+      // Unobserve after animation
+      statsObserver.unobserve(element);
+    }
+  });
+}, { threshold: 0.5 });
+
+statNumbers.forEach(stat => statsObserver.observe(stat));

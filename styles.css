@@ -763,7 +763,72 @@ section { padding: 7rem 0; overflow: visible; }
   padding-top: 2.5rem;
   border-top: 1px solid var(--border);
 }
-.stat-item {}
+
+.stat-item {
+  position: relative;
+  padding: 1.5rem;
+  background: rgba(255, 92, 26, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 92, 26, 0.1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.stat-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: var(--orange);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stat-item::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 92, 26, 0.1) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.stat-item:hover::after {
+  opacity: 1;
+}
+
+.stat-item:hover::before {
+  transform: scaleY(1);
+}
+
+.stat-item:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 92, 26, 0.08);
+  border-color: rgba(255, 92, 26, 0.3);
+  box-shadow: 0 8px 24px rgba(255, 92, 26, 0.15);
+}
+
+:root.light-theme .stat-item {
+  background: rgba(255, 92, 26, 0.03);
+  border-color: rgba(255, 92, 26, 0.08);
+}
+
+:root.light-theme .stat-item:hover {
+  background: rgba(255, 92, 26, 0.06);
+  border-color: rgba(255, 92, 26, 0.2);
+  box-shadow: 0 8px 24px rgba(255, 92, 26, 0.1);
+}
+
 .stat-number {
   font-family: 'Syne', sans-serif;
   font-size: 2.2rem;
@@ -771,12 +836,28 @@ section { padding: 7rem 0; overflow: visible; }
   color: var(--orange);
   line-height: 1;
   margin-bottom: 0.3rem;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
 }
+
+.stat-item:hover .stat-number {
+  transform: scale(1.1);
+  text-shadow: 0 0 20px rgba(255, 92, 26, 0.5);
+}
+
 .stat-label {
   font-size: 0.75rem;
   color: var(--muted);
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  transition: color 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.stat-item:hover .stat-label {
+  color: var(--muted2);
 }
 
 /* About right: decorative code block */
