@@ -2087,6 +2087,9 @@ footer {
   .project-card.featured { 
     grid-column: span 1; 
   }
+  .project-card {
+    grid-column: span 1 !important;
+  }
   .project-featured-inner { 
     grid-template-columns: 1fr; 
     gap: 1.5rem; 
