@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Philip Niron  — Software Engineer</title>
+<title>Philip Niron — Software Engineer</title>
 <link rel="icon" type="image/png" href="photo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,6 +29,12 @@
         <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
       </svg>
     </button>
+    <button class="terminal-toggle" id="terminalToggle" onclick="toggleTerminal()" aria-label="Toggle terminal mode">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <polyline points="4 17 10 11 4 5"></polyline>
+        <line x1="12" y1="19" x2="20" y2="19"></line>
+      </svg>
+    </button>
     <div class="hamburger" id="hamburger" onclick="toggleMenu()">
       <span></span><span></span><span></span>
     </div>
@@ -43,6 +49,35 @@
   <a href="#experience" onclick="closeMenu()">Experience</a>
   <a href="#education" onclick="closeMenu()">Education</a>
   <a href="#contact" onclick="closeMenu()">Contact</a>
+</div>
+
+<!-- TERMINAL MODE -->
+<div class="terminal-overlay" id="terminalOverlay">
+  <div class="terminal-window">
+    <div class="terminal-header">
+      <div class="terminal-buttons">
+        <span class="terminal-btn close" onclick="toggleTerminal()"></span>
+        <span class="terminal-btn minimize"></span>
+        <span class="terminal-btn maximize"></span>
+      </div>
+      <div class="terminal-title">philip@portfolio:~$</div>
+      <button class="terminal-exit" onclick="toggleTerminal()">Exit Terminal</button>
+    </div>
+    <div class="terminal-body" id="terminalBody">
+      <div class="terminal-output" id="terminalOutput">
+        <div class="terminal-line">
+          <span class="terminal-prompt">philip@portfolio:~$</span> <span class="terminal-welcome">Welcome to Philip's Portfolio Terminal</span>
+        </div>
+        <div class="terminal-line terminal-muted">Type '<span class="terminal-highlight">help</span>' to see available commands</div>
+        <div class="terminal-line terminal-muted">Type '<span class="terminal-highlight">exit</span>' to return to GUI mode</div>
+        <br>
+      </div>
+      <div class="terminal-input-line">
+        <span class="terminal-prompt">philip@portfolio:~$</span>
+        <input type="text" class="terminal-input" id="terminalInput" autocomplete="off" spellcheck="false" />
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- ═══════════ HERO ═══════════ -->

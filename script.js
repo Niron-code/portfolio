@@ -237,3 +237,345 @@ const statsObserver = new IntersectionObserver((entries) => {
 }, { threshold: 0.5 });
 
 statNumbers.forEach(stat => statsObserver.observe(stat));
+
+// ══════════════════════════════════════════════════════════════
+// TERMINAL MODE
+// ══════════════════════════════════════════════════════════════
+
+let commandHistory = [];
+let historyIndex = -1;
+
+function toggleTerminal() {
+  const overlay = document.getElementById('terminalOverlay');
+  const input = document.getElementById('terminalInput');
+  
+  if (overlay.classList.contains('active')) {
+    overlay.classList.remove('active');
+    setTimeout(() => {
+      overlay.style.display = 'none';
+    }, 300);
+  } else {
+    overlay.style.display = 'flex';
+    setTimeout(() => {
+      overlay.classList.add('active');
+      input.focus();
+    }, 10);
+  }
+}
+
+// Terminal command handler
+const terminalInput = document.getElementById('terminalInput');
+const terminalOutput = document.getElementById('terminalOutput');
+
+if (terminalInput) {
+  terminalInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const command = this.value.trim();
+      if (command) {
+        executeCommand(command);
+        commandHistory.push(command);
+        historyIndex = commandHistory.length;
+        this.value = '';
+      }
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (historyIndex > 0) {
+        historyIndex--;
+        this.value = commandHistory[historyIndex];
+      }
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (historyIndex < commandHistory.length - 1) {
+        historyIndex++;
+        this.value = commandHistory[historyIndex];
+      } else {
+        historyIndex = commandHistory.length;
+        this.value = '';
+      }
+    } else if (e.key === 'Tab') {
+      e.preventDefault();
+      autoComplete(this);
+    }
+  });
+}
+
+function executeCommand(cmd) {
+  const args = cmd.toLowerCase().split(' ');
+  const command = args[0];
+  const param = args.slice(1).join(' ');
+  
+  addToTerminal(`<div class="terminal-line"><span class="terminal-prompt">philip@portfolio:~$</span> <span class="terminal-command">${escapeHtml(cmd)}</span></div>`);
+  
+  switch(command) {
+    case 'help':
+      showHelp();
+      break;
+    case 'ls':
+    case 'list':
+      listSections();
+      break;
+    case 'cat':
+    case 'view':
+      if (param) {
+        viewSection(param);
+      } else {
+        addToTerminal('<div class="terminal-line terminal-error">Usage: cat [section]</div>');
+        addToTerminal('<div class="terminal-line terminal-muted">Example: cat about</div>');
+      }
+      break;
+    case 'clear':
+    case 'cls':
+      clearTerminal();
+      break;
+    case 'exit':
+    case 'quit':
+      toggleTerminal();
+      break;
+    case 'whoami':
+      showWhoami();
+      break;
+    case 'contact':
+      showContact();
+      break;
+    case 'skills':
+      viewSection('skills');
+      break;
+    case 'projects':
+      viewSection('projects');
+      break;
+    case 'experience':
+    case 'work':
+      viewSection('experience');
+      break;
+    case 'education':
+    case 'edu':
+      viewSection('education');
+      break;
+    case 'social':
+      showSocial();
+      break;
+    case 'download':
+    case 'cv':
+    case 'resume':
+      downloadCV();
+      break;
+    default:
+      addToTerminal(`<div class="terminal-line terminal-error">Command not found: ${escapeHtml(command)}</div>`);
+      addToTerminal('<div class="terminal-line terminal-muted">Type \'help\' to see available commands</div>');
+  }
+  
+  addToTerminal('<br>');
+  scrollToBottom();
+}
+
+function showHelp() {
+  addToTerminal('<div class="terminal-section-title">Available Commands:</div>');
+  addToTerminal('<div class="terminal-line"><span class="terminal-highlight">help</span>          <span class="terminal-muted">- Show this help message</span></div>');
+  addToTerminal('<div class="terminal-line"><span class="terminal-highlight">ls/list</span>       <span class="terminal-muted">- List all available sections</span></div>');
+  addToTerminal('<div class="terminal-line"><span class="terminal-highlight">cat [section]</span> <span class="terminal-muted">- View content of a section</span></div>');
+  addToTerminal('<div class="terminal-line"><span class="terminal-highlight">whoami</span>        <span class="terminal-muted">- Display brief information about me</span></div>');
+  addToTerminal('<div class="terminal-line"><span class="terminal-highlight">contact</span>       <span class="terminal-muted">- Show contact information</span></div>');
+  addToTerminal('<div class="terminal-line"><span class="terminal-highlight">social</span>        <span class="terminal-muted">- Show social media links</span></div>');
+  addToTerminal('<div class="terminal-line"><span class="terminal-highlight">cv/resume</span>     <span class="terminal-muted">- Download CV</span></div>');
+  addToTerminal('<div class="terminal-line"><span class="terminal-highlight">clear/cls</span>     <span class="terminal-muted">- Clear the terminal</span></div>');
+  addToTerminal('<div class="terminal-line"><span class="terminal-highlight">exit/quit</span>     <span class="terminal-muted">- Exit terminal mode</span></div>');
+  addToTerminal('<br>');
+  addToTerminal('<div class="terminal-line terminal-muted">Tip: Use Tab for auto-completion, ↑/↓ for command history</div>');
+}
+
+function listSections() {
+  addToTerminal('<div class="terminal-section-title">Available Sections:</div>');
+  addToTerminal('<div class="terminal-item">about</div>');
+  addToTerminal('<div class="terminal-item">skills</div>');
+  addToTerminal('<div class="terminal-item">projects</div>');
+  addToTerminal('<div class="terminal-item">experience</div>');
+  addToTerminal('<div class="terminal-item">education</div>');
+  addToTerminal('<div class="terminal-item">contact</div>');
+}
+
+function viewSection(section) {
+  switch(section) {
+    case 'about':
+    case 'about.txt':
+      addToTerminal('<div class="terminal-section-title">→ About Me</div>');
+      addToTerminal('<div class="terminal-text">Software Engineer with 4 years of industry experience delivering production-grade software across enterprise, cloud, and full-stack environments.</div>');
+      addToTerminal('<br>');
+      addToTerminal('<div class="terminal-text">My work has spanned sectors including aviation and telecommunications, where I\'ve contributed to complex, client-facing systems that serve real users at scale.</div>');
+      addToTerminal('<br>');
+      addToTerminal('<div class="terminal-text">Years Experience: 4+</div>');
+      addToTerminal('<div class="terminal-text">Companies: 2</div>');
+      addToTerminal('<div class="terminal-text">Industrial Projects Delivered: 4</div>');
+      break;
+      
+    case 'skills':
+    case 'skills.txt':
+      addToTerminal('<div class="terminal-section-title">→ Technical Skills</div>');
+      addToTerminal('<div class="terminal-text"><span class="terminal-highlight">Languages:</span> Java, Python, JavaScript</div>');
+      addToTerminal('<div class="terminal-text"><span class="terminal-highlight">Backend:</span> Spring Boot, Flask, REST APIs, GraphQL</div>');
+      addToTerminal('<div class="terminal-text"><span class="terminal-highlight">Frontend:</span> React, HTML5/CSS3</div>');
+      addToTerminal('<div class="terminal-text"><span class="terminal-highlight">Databases:</span> MySQL, PostgreSQL</div>');
+      addToTerminal('<div class="terminal-text"><span class="terminal-highlight">Cloud / DevOps:</span> AWS, Docker, CI/CD</div>');
+      addToTerminal('<div class="terminal-text"><span class="terminal-highlight">Testing / QA:</span> Selenium, Cucumber, Mockito, REST Assured, JUnit</div>');
+      addToTerminal('<div class="terminal-text"><span class="terminal-highlight">Tools:</span> VS Code, GIT, Jira, Confluence, IntelliJ IDEA, Eclipse</div>');
+      addToTerminal('<div class="terminal-text"><span class="terminal-highlight">Data Analytics:</span> Power BI, Python</div>');
+      break;
+      
+    case 'projects':
+    case 'projects.txt':
+      addToTerminal('<div class="terminal-section-title">→ Featured Projects</div>');
+      addToTerminal('<br>');
+      addToTerminal('<div class="terminal-text"><span class="terminal-highlight">1. Care N Cure</span> (Healthcare · AI)</div>');
+      addToTerminal('<div class="terminal-text">   AI-powered medical analysis application leveraging machine learning</div>');
+      addToTerminal('<div class="terminal-text">   Tech: Flask, React, MySQL, GCP, Python, RAG, Gemini LLM</div>');
+      addToTerminal('<br>');
+      addToTerminal('<div class="terminal-text"><span class="terminal-highlight">2. IFS Maintenix</span> (Aviation - Oct 2023 – Jul 2025)</div>');
+      addToTerminal('<div class="terminal-text">   Aviation maintenance software for USA-based client @ IFS</div>');
+      addToTerminal('<div class="terminal-text">   Tech: Java, Spring Boot, Enterprise</div>');
+      addToTerminal('<br>');
+      addToTerminal('<div class="terminal-text"><span class="terminal-highlight">3. Intelligent Virtual Assistant</span> (Telephony - Sep 2022 – Jun 2023)</div>');
+      addToTerminal('<div class="terminal-text">   Omnichannel IVA for USA-based client @ Virtusa</div>');
+      addToTerminal('<div class="terminal-text">   Tech: JavaScript, GraphQL, Java, Spring Boot, PostgreSQL, CCXML, VXML</div>');
+      addToTerminal('<br>');
+      addToTerminal('<div class="terminal-text"><span class="terminal-highlight">4. Capture Corn</span> (Computer Vision · Agriculture)</div>');
+      addToTerminal('<div class="terminal-text">   CNN-based Fall Army Worm detection Android app</div>');
+      addToTerminal('<div class="terminal-text">   Tech: Android, CNN, Machine Learning, Python</div>');
+      break;
+      
+    case 'experience':
+    case 'experience.txt':
+    case 'work':
+      addToTerminal('<div class="terminal-section-title">→ Work Experience</div>');
+      addToTerminal('<br>');
+      addToTerminal('<div class="terminal-text"><span class="terminal-highlight">IFS</span> - Software Engineer</div>');
+      addToTerminal('<div class="terminal-text">Oct 2023 – Jul 2025 | Aerospace & Defense Domain</div>');
+      addToTerminal('<div class="terminal-item">Developed aviation maintenance platform for USA-based client</div>');
+      addToTerminal('<div class="terminal-item">Worked on asset airworthiness and quality management systems</div>');
+      addToTerminal('<div class="terminal-item">Collaborated with international stakeholders</div>');
+      addToTerminal('<br>');
+      addToTerminal('<div class="terminal-text"><span class="terminal-highlight">Virtusa</span> - Associate Engineer - Technology (Java)</div>');
+      addToTerminal('<div class="terminal-text">Sep 2022 – Jun 2023 | Telephony Domain</div>');
+      addToTerminal('<div class="terminal-item">Built omnichannel Intelligent Virtual Assistants</div>');
+      addToTerminal('<div class="terminal-item">Integrated Twilio and LiveVox platforms</div>');
+      addToTerminal('<div class="terminal-item">Engineered scalable telephony solutions</div>');
+      break;
+      
+    case 'education':
+    case 'education.txt':
+    case 'edu':
+      addToTerminal('<div class="terminal-section-title">→ Education</div>');
+      addToTerminal('<br>');
+      addToTerminal('<div class="terminal-text"><span class="terminal-highlight">Master of Software Engineering</span></div>');
+      addToTerminal('<div class="terminal-text">Yoobee College of Creative Innovation</div>');
+      addToTerminal('<div class="terminal-text">July 2025 – July 2026 | Auckland, New Zealand</div>');
+      addToTerminal('<br>');
+      addToTerminal('<div class="terminal-text"><span class="terminal-highlight">Bachelor of Science in Computer Science and Software Engineering</span></div>');
+      addToTerminal('<div class="terminal-text">University of Bedfordshire</div>');
+      addToTerminal('<div class="terminal-text">January 2021 – October 2021 | SLIIT Academy, Sri Lanka</div>');
+      addToTerminal('<br>');
+      addToTerminal('<div class="terminal-text"><span class="terminal-highlight">Higher Diploma in Information Technology</span></div>');
+      addToTerminal('<div class="terminal-text">SLIIT Academy</div>');
+      addToTerminal('<div class="terminal-text">January 2018 – December 2020 | Colombo, Sri Lanka</div>');
+      break;
+      
+    case 'contact':
+    case 'contact.txt':
+      showContact();
+      break;
+      
+    default:
+      addToTerminal(`<div class="terminal-line terminal-error">Section '${escapeHtml(section)}' not found</div>`);
+      addToTerminal('<div class="terminal-line terminal-muted">Available sections: about, skills, projects, experience, education, contact</div>');
+  }
+}
+
+function showWhoami() {
+  addToTerminal('<div class="terminal-section-title">→ Philip Niron Nithianandan</div>');
+  addToTerminal('<div class="terminal-text">Role: Software Engineer</div>');
+  addToTerminal('<div class="terminal-text">Experience: 4 years in industry</div>');
+  addToTerminal('<div class="terminal-text">Domains: Aerospace & Defense, Telephony, Healthcare AI</div>');
+  addToTerminal('<div class="terminal-text">Location: Blockhouse Bay, Auckland</div>');
+  addToTerminal('<div class="terminal-text">Status: Available for opportunities</div>');
+}
+
+function showContact() {
+  addToTerminal('<div class="terminal-section-title">→ Contact Information</div>');
+  addToTerminal('<div class="terminal-text"><span class="terminal-highlight">Email:</span> philip.niron@gmail.com</div>');
+  addToTerminal('<div class="terminal-text"><span class="terminal-highlight">Phone:</span> +64 22 184 2644</div>');
+  addToTerminal('<div class="terminal-text"><span class="terminal-highlight">Location:</span> Blockhouse Bay, Auckland</div>');
+  addToTerminal('<br>');
+  addToTerminal('<div class="terminal-text terminal-muted">Type \'social\' to see social media links</div>');
+}
+
+function showSocial() {
+  addToTerminal('<div class="terminal-section-title">→ Social Media</div>');
+  addToTerminal('<div class="terminal-text"><span class="terminal-highlight">LinkedIn:</span> https://www.linkedin.com/in/philip-niron/</div>');
+  addToTerminal('<div class="terminal-text"><span class="terminal-highlight">GitHub:</span> https://github.com/Niron-code</div>');
+}
+
+function downloadCV() {
+  addToTerminal('<div class="terminal-success">Initiating CV download...</div>');
+  setTimeout(() => {
+    window.location.href = 'Philip Niron_CV.pdf';
+  }, 500);
+}
+
+function clearTerminal() {
+  terminalOutput.innerHTML = '';
+}
+
+function addToTerminal(html) {
+  terminalOutput.innerHTML += html;
+}
+
+function scrollToBottom() {
+  const terminalBody = document.getElementById('terminalBody');
+  terminalBody.scrollTop = terminalBody.scrollHeight;
+}
+
+function escapeHtml(text) {
+  const map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+  return text.replace(/[&<>"']/g, m => map[m]);
+}
+
+function autoComplete(input) {
+  const commands = ['help', 'ls', 'list', 'cat', 'view', 'clear', 'cls', 'exit', 'quit', 
+                   'whoami', 'contact', 'skills', 'projects', 'experience', 'work', 
+                   'education', 'edu', 'social', 'download', 'cv', 'resume'];
+  const sections = ['about', 'skills', 'projects', 'experience', 'education', 'contact'];
+  
+  const currentValue = input.value.toLowerCase();
+  const words = currentValue.split(' ');
+  const lastWord = words[words.length - 1];
+  
+  let suggestions;
+  if (words.length === 1) {
+    suggestions = commands.filter(cmd => cmd.startsWith(lastWord));
+  } else if ((words[0] === 'cat' || words[0] === 'view') && words.length === 2) {
+    suggestions = sections.filter(sec => sec.startsWith(lastWord));
+  }
+  
+  if (suggestions && suggestions.length === 1) {
+    words[words.length - 1] = suggestions[0];
+    input.value = words.join(' ');
+  } else if (suggestions && suggestions.length > 1) {
+    addToTerminal(`<div class="terminal-line terminal-muted">Suggestions: ${suggestions.join(', ')}</div>`);
+    scrollToBottom();
+  }
+}
+
+// Close terminal with Escape key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    const overlay = document.getElementById('terminalOverlay');
+    if (overlay && overlay.classList.contains('active')) {
+      toggleTerminal();
+    }
+  }
+});
