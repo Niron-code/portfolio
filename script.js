@@ -244,10 +244,61 @@ statNumbers.forEach(stat => statsObserver.observe(stat));
 
 let commandHistory = [];
 let historyIndex = -1;
+let terminalInput;
+let terminalOutput;
+
+// Initialize terminal after DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+  terminalInput = document.getElementById('terminalInput');
+  terminalOutput = document.getElementById('terminalOutput');
+  
+  console.log('Terminal initialized:', { 
+    input: terminalInput ? 'found' : 'NOT FOUND',
+    output: terminalOutput ? 'found' : 'NOT FOUND'
+  });
+  
+  if (terminalInput) {
+    terminalInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const command = this.value.trim();
+        if (command) {
+          executeCommand(command);
+          commandHistory.push(command);
+          historyIndex = commandHistory.length;
+          this.value = '';
+        }
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (historyIndex > 0) {
+          historyIndex--;
+          this.value = commandHistory[historyIndex];
+        }
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (historyIndex < commandHistory.length - 1) {
+          historyIndex++;
+          this.value = commandHistory[historyIndex];
+        } else {
+          historyIndex = commandHistory.length;
+          this.value = '';
+        }
+      } else if (e.key === 'Tab') {
+        e.preventDefault();
+        autoComplete(this);
+      }
+    });
+  }
+});
 
 function toggleTerminal() {
   const overlay = document.getElementById('terminalOverlay');
   const input = document.getElementById('terminalInput');
+  
+  if (!overlay) {
+    console.error('Terminal overlay not found');
+    return;
+  }
   
   if (overlay.classList.contains('active')) {
     overlay.classList.remove('active');
@@ -258,46 +309,11 @@ function toggleTerminal() {
     overlay.style.display = 'flex';
     setTimeout(() => {
       overlay.classList.add('active');
-      input.focus();
+      if (input) {
+        input.focus();
+      }
     }, 10);
   }
-}
-
-// Terminal command handler
-const terminalInput = document.getElementById('terminalInput');
-const terminalOutput = document.getElementById('terminalOutput');
-
-if (terminalInput) {
-  terminalInput.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      const command = this.value.trim();
-      if (command) {
-        executeCommand(command);
-        commandHistory.push(command);
-        historyIndex = commandHistory.length;
-        this.value = '';
-      }
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      if (historyIndex > 0) {
-        historyIndex--;
-        this.value = commandHistory[historyIndex];
-      }
-    } else if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      if (historyIndex < commandHistory.length - 1) {
-        historyIndex++;
-        this.value = commandHistory[historyIndex];
-      } else {
-        historyIndex = commandHistory.length;
-        this.value = '';
-      }
-    } else if (e.key === 'Tab') {
-      e.preventDefault();
-      autoComplete(this);
-    }
-  });
 }
 
 function executeCommand(cmd) {
@@ -521,16 +537,22 @@ function downloadCV() {
 }
 
 function clearTerminal() {
-  terminalOutput.innerHTML = '';
+  if (terminalOutput) {
+    terminalOutput.innerHTML = '';
+  }
 }
 
 function addToTerminal(html) {
-  terminalOutput.innerHTML += html;
+  if (terminalOutput) {
+    terminalOutput.innerHTML += html;
+  }
 }
 
 function scrollToBottom() {
   const terminalBody = document.getElementById('terminalBody');
-  terminalBody.scrollTop = terminalBody.scrollHeight;
+  if (terminalBody) {
+    terminalBody.scrollTop = terminalBody.scrollHeight;
+  }
 }
 
 function escapeHtml(text) {
@@ -564,7 +586,7 @@ function autoComplete(input) {
   if (suggestions && suggestions.length === 1) {
     words[words.length - 1] = suggestions[0];
     input.value = words.join(' ');
-  } else if (suggestions && suggestions.length > 1) {
+  } else if (suggestions && suggestions.length > 1 && terminalOutput) {
     addToTerminal(`<div class="terminal-line terminal-muted">Suggestions: ${suggestions.join(', ')}</div>`);
     scrollToBottom();
   }
