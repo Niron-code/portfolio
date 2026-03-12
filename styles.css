@@ -2141,7 +2141,11 @@ footer {
   }
   .theme-toggle { 
     margin-left: 0; 
-    margin-right: 0.75rem; 
+    margin-right: 0.5rem; 
+  }
+  .terminal-toggle {
+    margin-left: 0;
+    margin-right: 0.75rem;
   }
 
   /* Footer */
@@ -2813,9 +2817,7 @@ footer {
   .terminal-input {
     font-size: 0.8rem;
   }
-  .terminal-toggle {
-    display: none;
-  }
+  /* Terminal toggle button visible on mobile */
 }
 
 @media (max-width: 600px) {
