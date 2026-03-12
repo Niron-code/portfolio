@@ -147,3 +147,50 @@ document.querySelectorAll('.hero-content .reveal, .hero-photo-wrap .reveal').for
 setTimeout(() => {
   document.querySelectorAll('#hero .reveal').forEach(el => el.classList.add('visible'));
 }, 100);
+
+// Interactive Timeline Progress Animation
+function updateTimelineProgress() {
+  const timeline = document.querySelector('.timeline');
+  const timelineProgress = document.querySelector('.timeline-progress');
+  const timelineItems = document.querySelectorAll('.timeline-item');
+  
+  if (!timeline || !timelineProgress) return;
+  
+  const timelineRect = timeline.getBoundingClientRect();
+  const timelineTop = timelineRect.top + window.pageYOffset;
+  const timelineHeight = timelineRect.height;
+  const scrollPosition = window.pageYOffset + window.innerHeight / 2;
+  
+  // Calculate progress percentage
+  const progress = Math.max(0, Math.min(1, (scrollPosition - timelineTop) / timelineHeight));
+  timelineProgress.style.height = `${progress * 100}%`;
+  
+  // Animate timeline items as they come into view
+  timelineItems.forEach((item, index) => {
+    const itemRect = item.getBoundingClientRect();
+    const itemTop = itemRect.top + window.pageYOffset;
+    const itemTrigger = window.innerHeight * 0.8;
+    
+    if (window.pageYOffset + itemTrigger >= itemTop) {
+      setTimeout(() => {
+        item.classList.add('visible');
+      }, index * 150); // Stagger animation
+    }
+  });
+}
+
+// Throttle timeline updates
+let timelineTicking = false;
+function requestTimelineUpdate() {
+  if (!timelineTicking) {
+    window.requestAnimationFrame(() => {
+      updateTimelineProgress();
+      timelineTicking = false;
+    });
+    timelineTicking = true;
+  }
+}
+
+window.addEventListener('scroll', requestTimelineUpdate, { passive: true });
+window.addEventListener('resize', requestTimelineUpdate, { passive: true });
+window.addEventListener('load', updateTimelineProgress);
